@@ -103,7 +103,7 @@ export default class Link extends Component {
                     <button onClick={ this.handlerOnStat.bind(this) } className="d-block btn btn-sm btn-link align-self-center">
                         <i className="fas fa-grin-stars text-muted fa-sm" />
                     </button>
-                    { this.isActive && <button hidden={ this.isActive } className="d-block btn btn-sm btn-link ml-auto align-self-center">
+                    { this.isActive && <button className="d-block btn btn-sm btn-link ml-auto align-self-center">
                         <i className="fas fa-check-circle text-primary fa-sm"/>
                     </button> }
                 </div>
