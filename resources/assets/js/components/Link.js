@@ -4,6 +4,10 @@ import { info, error } from './../helpers/izitoast';
 
 
 export default class Link extends Component {
+    /**
+     *
+     * @param props
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -30,6 +34,10 @@ export default class Link extends Component {
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     handlerOnRemove(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -49,14 +57,26 @@ export default class Link extends Component {
             });
     }
 
+    /**
+     *
+     * @param event
+     */
     handlerOnEdit(event) {
         location.href = '/' + this.props.data.short + '/edit'
     }
 
+    /**
+     *
+     * @param event
+     */
     handlerOnStat(event) {
         location.href = '/' + this.props.data.short + '/stat'
     }
 
+    /**
+     *
+     * @returns {*}
+     */
     render() {
         return (
             <div hidden={ !this.state.visibility } className="link-item mb-3">

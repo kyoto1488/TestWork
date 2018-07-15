@@ -57358,6 +57358,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Link = function (_Component) {
     _inherits(Link, _Component);
 
+    /**
+     *
+     * @param props
+     */
     function Link(props) {
         _classCallCheck(this, Link);
 
@@ -57388,6 +57392,12 @@ var Link = function (_Component) {
         return _this;
     }
 
+    /**
+     *
+     * @param event
+     */
+
+
     _createClass(Link, [{
         key: 'handlerOnRemove',
         value: function handlerOnRemove(event) {
@@ -57408,16 +57418,34 @@ var Link = function (_Component) {
                 });
             });
         }
+
+        /**
+         *
+         * @param event
+         */
+
     }, {
         key: 'handlerOnEdit',
         value: function handlerOnEdit(event) {
             location.href = '/' + this.props.data.short + '/edit';
         }
+
+        /**
+         *
+         * @param event
+         */
+
     }, {
         key: 'handlerOnStat',
         value: function handlerOnStat(event) {
             location.href = '/' + this.props.data.short + '/stat';
         }
+
+        /**
+         *
+         * @returns {*}
+         */
+
     }, {
         key: 'render',
         value: function render() {

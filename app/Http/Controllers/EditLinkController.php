@@ -62,17 +62,12 @@ class EditLinkController extends Controller
             'date' => 'nullable',
             'time' => 'nullable',
         ]);
-
-        $links = Links::where([
+        $where = [
             'short' => $request->short_key,
             'u_id' => SessionAccount::getSessionId()
-        ])->get();
+        ];
 
-        if ($links->count() === 0) {
-            return response($request)
-                ->setStatusCode(404)
-                ->setContent('404');
-        }
+        Links::where($where)->firstOrFail();
 
         $updateData = [
             'active' => (bool)$request->active
@@ -88,11 +83,7 @@ class EditLinkController extends Controller
             ]);
         }
 
-        Links::where([
-            'short' => $request->short_key,
-            'u_id' => SessionAccount::getSessionId()
-        ])
-            ->update($updateData);
+        Links::where($where)->update($updateData);
 
         return redirect(route('home'))->with('success', 'Success edited link');
     }
