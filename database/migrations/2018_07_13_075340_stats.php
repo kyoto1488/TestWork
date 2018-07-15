@@ -17,7 +17,7 @@ class Stats extends Migration
             $table->increments('stats_id');
             $table->bigInteger('link_id');
             $table->dateTime('redirected_at');
-            $table->string('refer', 128);
+            $table->string('refer', 128)->nullable();
             $table->string('ip', 24);
             $table->string('browser', 24);
             $table->timestamps();

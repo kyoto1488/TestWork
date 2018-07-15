@@ -20,19 +20,18 @@ class CreatedLinkController extends Controller
      */
     public function get(Request $request)
     {
-        $links = Links::where('u_id', SessionAccount::getSessionId())->get();
+        return Links::where('u_id', SessionAccount::getSessionId())
+            ->get()
+            ->map(function($item) {
+                $item->short_link = URL::to($item->short);
 
-        $links = $links->map(function($item) {
-             $item->short_link = URL::to($item->short);
+                if (!is_null($item->lifetime)) {
+                    $dateTimeLifeTime = Carbon::parse($item->lifetime);
+                    $item->is_dead = $dateTimeLifeTime->lt(Carbon::now()->toDateTimeString());
+                }
 
-             if (!is_null($item->lifetime)) {
-                 $dateTimeLifeTime = Carbon::parse($item->lifetime);
-                 $item->is_dead = $dateTimeLifeTime->lt(Carbon::now()->toDateTimeString());
-             }
-
-             return $item;
-        });
-
-        return $links->toJson();
+                return $item;
+            })
+            ->toJson();
     }
 }

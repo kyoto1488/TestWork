@@ -22,16 +22,9 @@ class StatLinkController extends Controller
         $link = Links::where([
             'short' => $request->short_key,
             'u_id' => SessionAccount::getSessionId()
-        ])->first();
-
-        if ($link->count() === 0) {
-            return response()
-                ->setStatusCode(404)
-                ->setContent('404');
-        }
+        ])->firstOrFail();
 
         $stats = Stats::where('link_id', $link->link_id)->get();
-
 
         return view('stat', ['stats' => $stats]);
     }

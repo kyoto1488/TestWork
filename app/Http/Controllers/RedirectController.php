@@ -6,6 +6,7 @@ use App\Links;
 use App\Stats;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Jenssegers\Agent\Agent;
 
 /**
@@ -16,18 +17,11 @@ class RedirectController extends Controller
 {
     /**
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function redirect(Request $request)
     {
-        $links = Links::where('short', $request->short_key)->get();
-
-        if ($links->count() === 0) {
-            return response($request)
-                ->setStatusCode(404);
-        }
-
-        $link = $links->first();
+        $link = Links::where('short', $request->short_key)->firstOrFail();
 
         if (!$link->active) {
             return response($request)
@@ -48,8 +42,10 @@ class RedirectController extends Controller
         $stat = new Stats;
         $stat->link_id = $link->link_id;
         $stat->redirected_at = (Carbon::now())->toDateTimeString();
-        $stat->refer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
-        $stat->ip = $_SERVER['REMOTE_ADDR'];
+        $stat->refer = $request->headers->get('referer')
+            ? $request->headers->get('referer')
+            : null;
+        $stat->ip = $request->ip();
         $stat->browser = (new Agent)->browser();
 
         $stat->save();

@@ -11,11 +11,18 @@
                         <input type="text" disabled="disabled" value="{{ $original }}" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="lifetime">Lifetime</label>
-                        <input type="datetime-local" name="lifetime" min="{{ Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" id="lifetime" value="{{ $lifetime }}" class="form-control">
+                        <label>Lifetime</label>
+                        <div class="form-row">
+                            <div class="col-7">
+                                <input type="date" name="date" min="{{ Carbon\Carbon::now()->toDateString() }}" value="{{ $date }}" class="form-control">
+                            </div>
+                            <div class="col-5">
+                                <input type="time" name="time" value="{{ $time }}" class="form-control">
+                            </div>
+                        </div>
                     </div>
                     <div class="custom-control custom-checkbox form-group">
-                        <input {{ intval($active) === 1 ? 'checked' : '' }} type="checkbox" name="active" class="custom-control-input" id="active">
+                        <input {{ $active ? 'checked' : '' }} type="checkbox" name="active" class="custom-control-input" id="active">
                         <label class="custom-control-label" for="active">Active</label>
                     </div>
                     <button type="submit" class="btn btn-primary">

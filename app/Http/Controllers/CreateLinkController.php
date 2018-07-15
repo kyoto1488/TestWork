@@ -22,19 +22,21 @@ class CreateLinkController extends Controller
     {
         $request->validate([
             'link' => 'required',
-            'lifetime' => 'nullable',
-            'active' => 'required'
+            'date' => 'nullable',
+            'time' => 'nullable',
+            'active' => 'required|boolean'
         ]);
+
         $generateUniqueId = Links::generateUniqueId();
 
         $link = new Links;
         $link->original = $request->link;
         $link->short = $generateUniqueId;
-        $link->active = $request->active === 'on';
+        $link->active = $request->active;
         $link->u_id = SessionAccount::getSessionId();
 
-        if (!is_null($request->lifetime)) {
-            $link->lifetime = Carbon::parse($request->lifetime)->toDateTimeString();
+        if (!is_null($request->date) and !is_null($request->time)) {
+            $link->lifetime = Carbon::parse($request->date . ' ' . $request->time)->toDateTimeString();
         }
 
         if ($link->save()) {

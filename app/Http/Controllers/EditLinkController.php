@@ -26,18 +26,29 @@ class EditLinkController extends Controller
                 ->setStatusCode(404)
                 ->setContent('404');
         }
-
         $link = $links->first();
 
-
-        return view('edit', [
+        $exportData = [
             'original' => $link->original,
-            'lifetime' => !is_null($link->lifetime)
-                ? Carbon::parse($link->lifetime)->format('Y-m-d\TH:i')
-                : null,
             'active' => $link->active,
-            'link_id' => $link->short
-        ]);
+            'link_id' => $link->short,
+        ];
+
+        if (is_null($link->lifetime)) {
+            $exportData = array_merge($exportData, [
+                'date' => null,
+                'time' => null
+            ]);
+        } else {
+            $lifeTime = Carbon::parse($link->lifetime);
+
+            $exportData = array_merge($exportData, [
+                'date' => $lifeTime->toDateString(),
+                'time' => $lifeTime->toTimeString()
+            ]);
+        }
+
+        return view('edit', $exportData);
     }
 
     /**
@@ -47,8 +58,9 @@ class EditLinkController extends Controller
     public function edit(Request $request)
     {
         $request->validate([
-            'lifetime' => 'nullable',
-            'active' => 'nullable'
+            'active' => 'nullable',
+            'date' => 'nullable',
+            'time' => 'nullable',
         ]);
 
         $links = Links::where([
@@ -62,16 +74,25 @@ class EditLinkController extends Controller
                 ->setContent('404');
         }
 
+        $updateData = [
+            'active' => (bool)$request->active
+        ];
+
+        if (!is_null($request->date) and !is_null($request->time)) {
+            $updateData = array_merge($updateData, [
+                'lifetime' => Carbon::parse($request->date . ' ' . $request->time)->toDateTimeString()
+            ]);
+        } else {
+            $updateData = array_merge($updateData, [
+                'lifetime' => null
+            ]);
+        }
+
         Links::where([
             'short' => $request->short_key,
             'u_id' => SessionAccount::getSessionId()
         ])
-            ->update([
-            'lifetime' => !is_null($request->lifetime)
-                ? Carbon::parse($request->lifetime)->toDateTimeString()
-                : null,
-            'active' => (bool)$request->active
-        ]);
+            ->update($updateData);
 
         return redirect(route('home'))->with('success', 'Success edited link');
     }
